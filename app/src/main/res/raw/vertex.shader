@@ -1,18 +1,19 @@
+#version 300 es
 // Vertex Shader
 
-attribute vec4 vertex_in;
-attribute vec4 color_in;
-attribute vec3 normal_in;
+layout (location = 0) in vec4 vertex_in;
+layout (location = 1) in vec4 color_in;
+layout (location = 2) in vec3 normal_in;
 
 uniform mat4 pvm;
 uniform mat4 vm;
 
 uniform vec4 lightpos;
 
-varying vec4 color_vary;
-varying vec3 normal_vary;
-varying vec3 lightdir_vary;
-varying vec3 viewdir_vary;
+out vec4 color_vary;
+out vec3 normal_vary;
+out vec3 lightdir_vary;
+out vec3 viewdir_vary;
 
 void main()
 {

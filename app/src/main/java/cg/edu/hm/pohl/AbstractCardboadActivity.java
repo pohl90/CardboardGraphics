@@ -1,6 +1,6 @@
 package cg.edu.hm.pohl;
 
-import android.opengl.GLES30;
+import android.opengl.GLES20;
 import android.os.Bundle;
 
 import com.google.vrtoolkit.cardboard.CardboardActivity;
@@ -62,10 +62,10 @@ public class AbstractCardboadActivity extends CardboardActivity implements Cardb
 
     @Override
     public void onDrawEye(Eye eye) {
-        GLES30.glEnable(GLES30.GL_DEPTH_TEST);
-        GLES30.glEnable(GLES30.GL_CULL_FACE);
-        GLES30.glFrontFace(GLES30.GL_CCW);
-        GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT | GLES30.GL_DEPTH_BUFFER_BIT);
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+        GLES20.glEnable(GLES20.GL_CULL_FACE);
+        GLES20.glFrontFace(GLES20.GL_CCW);
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
         float[] projection = eye.getPerspective(Z_NEAR, Z_FAR);
 
@@ -86,7 +86,7 @@ public class AbstractCardboadActivity extends CardboardActivity implements Cardb
 
     @Override
     public void onSurfaceCreated(EGLConfig eglConfig) {
-        GLES30.glClearColor(0.1f, 0.1f, 0.1f, 1f);
+        GLES20.glClearColor(0.1f, 0.1f, 0.1f, 1f);
         shader = new Shader(this, R.raw.vertex, R.raw.fragment);
 
         gridShader = new Shader(this, R.raw.grid_vertex, R.raw.grid_fragment);

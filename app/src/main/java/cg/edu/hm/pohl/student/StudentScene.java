@@ -1,6 +1,6 @@
 package cg.edu.hm.pohl.student;
 
-import android.opengl.GLES30;
+import android.opengl.GLES20;
 import android.opengl.Matrix;
 
 import java.nio.FloatBuffer;
@@ -119,7 +119,7 @@ public class StudentScene extends VRComponent {
         // To get the amount of vertices we just need to divide the length of coneVertices by 3
         final int amountOfConeVertices = coneVertices.length / 3;
         // Draw
-        glDrawArrays(GLES30.GL_TRIANGLES, 0, amountOfConeVertices);
+        glDrawArrays(GLES20.GL_TRIANGLES, 0, amountOfConeVertices);
     }
 
     private void drawBottomPart() {
@@ -135,7 +135,7 @@ public class StudentScene extends VRComponent {
         // To get the amount of vertices we just need to divide the length of coneBottomVertices by 3
         final int amountOfConeBottomVertices = coneBottomVertices.length / 3;
         // Draw
-        glDrawArrays(GLES30.GL_TRIANGLES, 0, amountOfConeBottomVertices);
+        glDrawArrays(GLES20.GL_TRIANGLES, 0, amountOfConeBottomVertices);
     }
 
     private void setup() {

@@ -1,9 +1,13 @@
+#version 300 es
 // Fragment Shader
+precision mediump float;
 
-varying vec4 color_vary;
-varying vec3 normal_vary;
-varying vec3 lightdir_vary;
-varying vec3 viewdir_vary;
+in vec4 color_vary;
+in vec3 normal_vary;
+in vec3 lightdir_vary;
+in vec3 viewdir_vary;
+
+out vec4 frag_color;
 
 struct lighting
 {
@@ -32,5 +36,5 @@ void main()
         s = pow(max(0.f, dot(nViewdir, ref)), 16.f);
     }
 
-    gl_FragColor = lightcolor * color_vary + s * light.specular;
+    frag_color = lightcolor * color_vary + s * light.specular;
 }
