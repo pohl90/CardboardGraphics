@@ -6,8 +6,8 @@ import android.opengl.Matrix;
 import java.nio.FloatBuffer;
 
 import ba.pohl1.hm.edu.vrlibrary.base.Shader;
+import ba.pohl1.hm.edu.vrlibrary.base.manager.RendererManager;
 import ba.pohl1.hm.edu.vrlibrary.base.rendering.Material;
-import ba.pohl1.hm.edu.vrlibrary.maths.Matrix4x4;
 import ba.pohl1.hm.edu.vrlibrary.model.VRComponent;
 import ba.pohl1.hm.edu.vrlibrary.util.BAUtils;
 import cg.edu.hm.pohl.AbstractCardboadActivity;
@@ -57,11 +57,18 @@ public class StudentScene extends VRComponent {
 
     private DataStructures.LightParameters light = new DataStructures.LightParameters();
 
-
     public StudentScene() {
         shader = AbstractCardboadActivity.shader;
         setup();
         setupShaderParams();
+        RendererManager.getInstance().add(this);
+    }
+
+    @Override
+    public boolean hasMaterial() {
+        // Pretend that we have a material set.
+        // Otherwise the RendererManager won't draw us...
+        return true;
     }
 
     public void draw(final float[] view, float[] projection) {
@@ -72,19 +79,15 @@ public class StudentScene extends VRComponent {
         // Use the shader
         shader.use();
 
-        // Push the matrix
-        matrixStack.pushMatrix();
-
-        // Retrieve the model matrix from the stack
-        final Matrix4x4 modelMatrix = matrixStack.peek();
+        identity();
 
         // Transform the shape
-        modelMatrix.translateZ(-5f);
+        translateZ(-5f);
 
         // Update collision box bounds
-        updateBounds(modelMatrix);
+        updateBounds(this);
 
-        Matrix.multiplyMM(matrices.vm, 0, view, 0, modelMatrix.getFloat16(), 0);
+        Matrix.multiplyMM(matrices.vm, 0, view, 0, getFloat16(), 0);
         Matrix.multiplyMM(matrices.pvm, 0, projection, 0, matrices.vm, 0);
 
         // Put the parameters into the shaders
@@ -99,9 +102,6 @@ public class StudentScene extends VRComponent {
 
         drawTopPart();
         drawBottomPart();
-
-        // Pop the matrix
-        matrixStack.popMatrix();
 
         BAUtils.checkGLError(TAG, "Error while drawing!");
     }

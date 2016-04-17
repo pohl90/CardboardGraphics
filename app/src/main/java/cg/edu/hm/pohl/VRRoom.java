@@ -5,6 +5,7 @@ import android.opengl.Matrix;
 import java.nio.FloatBuffer;
 
 import ba.pohl1.hm.edu.vrlibrary.base.Shader;
+import ba.pohl1.hm.edu.vrlibrary.base.manager.RendererManager;
 import ba.pohl1.hm.edu.vrlibrary.base.rendering.Material;
 import ba.pohl1.hm.edu.vrlibrary.data.GeometryData;
 import ba.pohl1.hm.edu.vrlibrary.model.VRComponent;
@@ -37,11 +38,10 @@ public class VRRoom extends VRComponent {
     private VRCube wallWest;
     private VRCube wallEast;
 
-    private static final float[] modelView = new float[16];
-    private static final float[] modelViewProjection = new float[16];
-
     public VRRoom() {
         setCollisionEnabled(false);
+        RendererManager.getInstance().add(this);
+
         cubeData = GeometryGenerator.createCube();
 
         floor = new VRCube(AbstractCardboadActivity.gridShader);
@@ -65,17 +65,27 @@ public class VRRoom extends VRComponent {
         wallEast.translateX(0.5f + 0.5f * WIDTH).translateY(0.5f * HEIGHT).scale(1, HEIGHT, DEPTH);
         wallEast.setColor(BAConstants.COLOR_BLACK);
 
-
         translateY(-1f);
     }
 
     @Override
+    public boolean isDirty() {
+        // Pretend that we are dirty.
+        // Otherwise the transformation won't be triggered...
+        return true;
+    }
+
+    @Override
+    public boolean hasMaterial() {
+        // Pretend that we have a material set.
+        // Otherwise the RendererManager won't draw us...
+        return true;
+    }
+
+    @Override
     public void draw(float[] view, float[] perspective) {
-        matrixStack.pushMatrix();
-
-        // Apply transformations
-        doTransform();
-
+        Matrix.setIdentityM(getModelMatrix().getFloat16(), 0);
+        transform(getModelMatrix());
         // Draw floor
         floor.draw(view, perspective);
         // Draw walls
@@ -83,8 +93,6 @@ public class VRRoom extends VRComponent {
         wallSouth.draw(view, perspective);
         wallWest.draw(view, perspective);
         wallEast.draw(view, perspective);
-
-        matrixStack.popMatrix();
     }
 
     private class VRCube extends VRComponent {
@@ -100,15 +108,24 @@ public class VRRoom extends VRComponent {
         }
 
         @Override
+        public void setColor(float[] color) {
+            colorsBuffer.position(0);
+            for(int i = 0; i < cubeData.getColorsArray().length; i++) {
+                colorsBuffer.put(i, color[i % 4]);
+            }
+        }
+
+        @Override
+        public boolean isDirty() {
+            return true;
+        }
+
+        @Override
         public void draw(float[] view, float[] perspective) {
-            matrixStack.pushMatrix();
+            VRCube.this.getModelMatrix().set(VRRoom.this.getModelMatrix());
 
             // Apply transformations
             doTransform();
-
-            // Calculate MV and MVP matrices
-            Matrix.multiplyMM(modelView, 0, view, 0, getModelMatrix().getFloat16(), 0);
-            Matrix.multiplyMM(modelViewProjection, 0, perspective, 0, modelView, 0);
 
             colorShader.use();
 
@@ -123,14 +140,7 @@ public class VRRoom extends VRComponent {
 
             glDrawArrays(GL_TRIANGLES, 0, verticesBuffer.capacity() / 3);
             BAUtils.checkGLError(TAG, "Error while drawing!");
-
-            matrixStack.popMatrix();
         }
 
-        private void setColor(final float[] color) {
-            final float[] colorsArray = new float[colorsBuffer.capacity()];
-            BAUtils.fillColors(colorsArray, color);
-            colorsBuffer.put(colorsArray);
-        }
     }
 }
