@@ -79,10 +79,12 @@ public class StudentScene extends VRComponent {
         // Use the shader
         shader.use();
 
+        // Set the identity of the matrix
         identity();
 
         // Transform the shape
         translateZ(-5f);
+        rotateZ(90);
 
         // Update collision box bounds
         updateBounds(this);

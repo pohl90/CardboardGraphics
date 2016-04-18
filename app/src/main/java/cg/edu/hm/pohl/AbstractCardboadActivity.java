@@ -1,8 +1,10 @@
 package cg.edu.hm.pohl;
 
+import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLES30;
 import android.os.Bundle;
+import android.os.Vibrator;
 
 import com.google.vrtoolkit.cardboard.CardboardActivity;
 import com.google.vrtoolkit.cardboard.CardboardView;
@@ -15,13 +17,13 @@ import javax.microedition.khronos.egl.EGLConfig;
 import ba.pohl1.hm.edu.vrlibrary.base.Options;
 import ba.pohl1.hm.edu.vrlibrary.base.Shader;
 import ba.pohl1.hm.edu.vrlibrary.base.manager.CollisionManager;
-import ba.pohl1.hm.edu.vrlibrary.base.manager.InstancedRendererManager;
 import ba.pohl1.hm.edu.vrlibrary.base.manager.RendererManager;
 import ba.pohl1.hm.edu.vrlibrary.base.manager.TransformationManager;
 import ba.pohl1.hm.edu.vrlibrary.model.VRCamera;
 import ba.pohl1.hm.edu.vrlibrary.navigation.VRDrawableNavigator;
 import ba.pohl1.hm.edu.vrlibrary.navigation.VRNavigator;
 import ba.pohl1.hm.edu.vrlibrary.physics.focus.FocusManager;
+import cg.edu.hm.pohl.navigator.ArrowNavigator;
 import cg.edu.hm.pohl.student.StudentScene;
 
 import static ba.pohl1.hm.edu.vrlibrary.util.BAConstants.Z_FAR;
@@ -41,6 +43,7 @@ public class AbstractCardboadActivity extends CardboardActivity implements Cardb
     private StudentScene studentScene;
 
     private VRNavigator navigator;
+    private Vibrator vibrator;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,6 +57,7 @@ public class AbstractCardboadActivity extends CardboardActivity implements Cardb
         setCardboardView(cardboardView);
 
         CollisionManager.getInstance().init(1, 1, 1, 200, 200, 200);
+        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
     }
 
     @Override
@@ -92,7 +96,6 @@ public class AbstractCardboadActivity extends CardboardActivity implements Cardb
 
         // Draw all the objects
         RendererManager.getInstance().render(camera.getView(), projection);
-        InstancedRendererManager.getInstance().drawInstanced(camera.getView(), projection);
         if(navigator instanceof VRDrawableNavigator) {
             ((VRDrawableNavigator) navigator).onDraw(camera.getView(), projection);
         }
@@ -120,7 +123,8 @@ public class AbstractCardboadActivity extends CardboardActivity implements Cardb
         vrRoom = new VRRoom();
         studentScene = new StudentScene();
 
-        navigator = new Navigator(camera, vrRoom, studentScene);
+        //navigator = new Navigator(camera, vrRoom, studentScene);
+        navigator = new ArrowNavigator(vibrator, camera, vrRoom, studentScene);
     }
 
     @Override

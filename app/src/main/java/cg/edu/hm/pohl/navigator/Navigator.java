@@ -1,8 +1,9 @@
-package cg.edu.hm.pohl;
+package cg.edu.hm.pohl.navigator;
 
 import ba.pohl1.hm.edu.vrlibrary.base.Options;
 import ba.pohl1.hm.edu.vrlibrary.model.VRCamera;
 import ba.pohl1.hm.edu.vrlibrary.navigation.VRNavigator;
+import cg.edu.hm.pohl.VRRoom;
 import cg.edu.hm.pohl.student.StudentScene;
 
 /**
