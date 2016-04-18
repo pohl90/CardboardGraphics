@@ -44,7 +44,7 @@ public class DataStructures
     }
 
 
-    public static class LightParameters
+    public static class LightingParameters
     {
         public float[] ambient = { .4f, .4f, .4f, 1.f };
         public float[] diffuse = { 1.f, 1.f, 1.f, 1.f };

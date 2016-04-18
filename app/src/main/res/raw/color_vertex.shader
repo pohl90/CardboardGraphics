@@ -9,7 +9,6 @@ in vec4 a_color;
 
 out vec4 v_color;
 
-// Gourad shading
 void main() {
    mat4 mvp = u_projection * u_view * u_model;
    v_color = a_color;

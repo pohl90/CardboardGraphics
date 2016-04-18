@@ -29,4 +29,5 @@ void main()
 //    mat3 n = transpose(inverse(mat3(vm)));
 //    Normal Matrix = T(I(vm)) if rotation part of vm is orthonormal. Since no scaling has been applied R(vm) is orthonormal, therefore T(I(vm)) = vm
     normal_vary = mat3(vm) * normal_in;
+
 }

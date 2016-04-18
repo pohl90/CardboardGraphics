@@ -55,7 +55,7 @@ public class StudentScene extends VRComponent {
     private float[] lightpos = { 0.f, 5.f, -4.f, 1.f };
     private float[] lightpos_eye = new float[4];
 
-    private DataStructures.LightParameters light = new DataStructures.LightParameters();
+    private DataStructures.LightingParameters light = new DataStructures.LightingParameters();
 
 
     public StudentScene() {
@@ -80,6 +80,7 @@ public class StudentScene extends VRComponent {
 
         // Transform the shape
         modelMatrix.translateZ(-5f);
+        modelMatrix.rotateZ(90f);
 
         // Update collision box bounds
         updateBounds(modelMatrix);
