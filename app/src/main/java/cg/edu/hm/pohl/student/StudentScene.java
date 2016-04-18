@@ -83,8 +83,7 @@ public class StudentScene extends VRComponent {
         identity();
 
         // Transform the shape
-        translateZ(-5f);
-        rotateZ(90);
+        translateZ(-5f).translateY(1.0f).rotateZ(90);
 
         // Update collision box bounds
         updateBounds(this);
@@ -162,21 +161,21 @@ public class StudentScene extends VRComponent {
 
             // First vertex
             coneVertices[vertexIndex] = 0;
-            coneVertices[vertexIndex + 1] = 1f;
+            coneVertices[vertexIndex + 1] = .5f;
             coneVertices[vertexIndex + 2] = 0;
             coneNormals[vertexIndex] = 0;
             coneNormals[vertexIndex + 1] = 1f;
             coneNormals[vertexIndex + 2] = 0;
             // Second vertex
             coneVertices[vertexIndex + 3] = x1;
-            coneVertices[vertexIndex + 4] = 0;
+            coneVertices[vertexIndex + 4] = -.5f;
             coneVertices[vertexIndex + 5] = z1;
             coneNormals[vertexIndex + 3] = x1;
             coneNormals[vertexIndex + 4] = .5f;
             coneNormals[vertexIndex + 5] = z1;
             // Third vertex
             coneVertices[vertexIndex + 6] = x2;
-            coneVertices[vertexIndex + 7] = 0;
+            coneVertices[vertexIndex + 7] = -.5f;
             coneVertices[vertexIndex + 8] = z2;
             coneNormals[vertexIndex + 6] = x2;
             coneNormals[vertexIndex + 7] = .5f;
@@ -184,21 +183,21 @@ public class StudentScene extends VRComponent {
 
             // First bottom vertex
             coneBottomVertices[vertexIndex] = 0;
-            coneBottomVertices[vertexIndex + 1] = 0;
+            coneBottomVertices[vertexIndex + 1] = -.5f;
             coneBottomVertices[vertexIndex + 2] = 0;
             coneBottomNormals[vertexIndex] = 0;
             coneBottomNormals[vertexIndex + 1] = 1f;
             coneBottomNormals[vertexIndex + 2] = 0;
             // Second bottom vertex
             coneBottomVertices[vertexIndex + 3] = x1;
-            coneBottomVertices[vertexIndex + 4] = 0;
+            coneBottomVertices[vertexIndex + 4] = -.5f;
             coneBottomVertices[vertexIndex + 5] = z1;
             coneBottomNormals[vertexIndex + 3] = 0;
             coneBottomNormals[vertexIndex + 4] = 1f;
             coneBottomNormals[vertexIndex + 5] = 0;
             // Third bottom vertex
             coneBottomVertices[vertexIndex + 6] = x2;
-            coneBottomVertices[vertexIndex + 7] = 0;
+            coneBottomVertices[vertexIndex + 7] = -.5f;
             coneBottomVertices[vertexIndex + 8] = z2;
             coneBottomNormals[vertexIndex + 6] = 0;
             coneBottomNormals[vertexIndex + 7] = 1f;

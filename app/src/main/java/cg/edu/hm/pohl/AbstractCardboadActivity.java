@@ -5,6 +5,7 @@ import android.opengl.GLES20;
 import android.opengl.GLES30;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.view.View;
 
 import com.google.vrtoolkit.cardboard.CardboardActivity;
 import com.google.vrtoolkit.cardboard.CardboardView;
@@ -42,8 +43,21 @@ public class AbstractCardboadActivity extends CardboardActivity implements Cardb
     private VRCamera camera;
     private StudentScene studentScene;
 
+    private VROptionsDialog optionsDialog;
     private VRNavigator navigator;
     private Vibrator vibrator;
+
+    /**
+     * Opens the options dialog over the given view.
+     *
+     * @param view the view which opens the dialog
+     */
+    public void showOptions(final View view) {
+        if(optionsDialog == null) {
+            optionsDialog = new VROptionsDialog(view.getContext());
+        }
+        optionsDialog.show();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,7 +82,7 @@ public class AbstractCardboadActivity extends CardboardActivity implements Cardb
     @Override
     public void onNewFrame(HeadTransform headTransform) {
         camera.updateCamera(headTransform);
-        navigator.navigate(0.02f);
+        navigator.navigate(Options.CAMERA_SPEED_MODIFIER * 0.025f);
         TransformationManager.getInstance().applyTransformations(1);
     }
 
@@ -119,6 +133,7 @@ public class AbstractCardboadActivity extends CardboardActivity implements Cardb
         colorShader = new Shader(this, R.raw.color_vertex, R.raw.color_fragment);
 
         camera = new VRCamera();
+        camera.translateY(1.0f);
         camera.setCanMoveInY(false);
         vrRoom = new VRRoom();
         studentScene = new StudentScene();

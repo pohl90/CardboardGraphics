@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="culling_array">
+        <item>Back</item>
+        <item>Front</item>
+        <item>Front and back</item>
+    </string-array>
+</resources>

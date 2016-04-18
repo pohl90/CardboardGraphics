@@ -64,8 +64,6 @@ public class VRRoom extends VRComponent {
         wallEast = new VRCube(colorShader);
         wallEast.translateX(0.5f + 0.5f * WIDTH).translateY(0.5f * HEIGHT).scale(1, HEIGHT, DEPTH);
         wallEast.setColor(BAConstants.COLOR_BLACK);
-
-        translateY(-1f);
     }
 
     @Override
