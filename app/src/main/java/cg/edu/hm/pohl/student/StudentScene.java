@@ -9,7 +9,7 @@ import ba.pohl1.hm.edu.vrlibrary.base.Shader;
 import ba.pohl1.hm.edu.vrlibrary.base.manager.RendererManager;
 import ba.pohl1.hm.edu.vrlibrary.base.rendering.Material;
 import ba.pohl1.hm.edu.vrlibrary.model.VRComponent;
-import ba.pohl1.hm.edu.vrlibrary.util.BAUtils;
+import ba.pohl1.hm.edu.vrlibrary.util.CGUtils;
 import cg.edu.hm.pohl.AbstractCardboadActivity;
 import cg.edu.hm.pohl.DataStructures;
 
@@ -104,7 +104,7 @@ public class StudentScene extends VRComponent {
         drawTopPart();
         drawBottomPart();
 
-        BAUtils.checkGLError(TAG, "Error while drawing!");
+        CGUtils.checkGLError(TAG, "Error while drawing!");
     }
 
     private void drawTopPart() {

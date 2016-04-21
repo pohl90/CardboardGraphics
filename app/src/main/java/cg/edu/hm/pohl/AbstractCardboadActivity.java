@@ -21,14 +21,14 @@ import ba.pohl1.hm.edu.vrlibrary.base.manager.CollisionManager;
 import ba.pohl1.hm.edu.vrlibrary.base.manager.RendererManager;
 import ba.pohl1.hm.edu.vrlibrary.base.manager.TransformationManager;
 import ba.pohl1.hm.edu.vrlibrary.model.VRCamera;
+import ba.pohl1.hm.edu.vrlibrary.navigation.ArrowNavigator;
 import ba.pohl1.hm.edu.vrlibrary.navigation.VRDrawableNavigator;
 import ba.pohl1.hm.edu.vrlibrary.navigation.VRNavigator;
 import ba.pohl1.hm.edu.vrlibrary.physics.focus.FocusManager;
-import cg.edu.hm.pohl.navigator.ArrowNavigator;
 import cg.edu.hm.pohl.student.StudentScene;
 
-import static ba.pohl1.hm.edu.vrlibrary.util.BAConstants.Z_FAR;
-import static ba.pohl1.hm.edu.vrlibrary.util.BAConstants.Z_NEAR;
+import static ba.pohl1.hm.edu.vrlibrary.util.CGConstants.Z_FAR;
+import static ba.pohl1.hm.edu.vrlibrary.util.CGConstants.Z_NEAR;
 
 /**
  * Created by Pohl on 14.04.2016.
@@ -82,7 +82,7 @@ public class AbstractCardboadActivity extends CardboardActivity implements Cardb
     @Override
     public void onNewFrame(HeadTransform headTransform) {
         camera.updateCamera(headTransform);
-        navigator.navigate(Options.CAMERA_SPEED_MODIFIER * 0.025f);
+        navigator.navigate(camera, Options.CAMERA_SPEED_MODIFIER * 0.025f);
         TransformationManager.getInstance().applyTransformations(1);
     }
 
@@ -133,13 +133,13 @@ public class AbstractCardboadActivity extends CardboardActivity implements Cardb
         colorShader = new Shader(this, R.raw.color_vertex, R.raw.color_fragment);
 
         camera = new VRCamera();
-        camera.translateY(1.0f);
+        camera.translateY(1.2f);
         camera.setCanMoveInY(false);
         vrRoom = new VRRoom();
         studentScene = new StudentScene();
 
         //navigator = new Navigator(camera, vrRoom, studentScene);
-        navigator = new ArrowNavigator(vibrator, camera, vrRoom, studentScene);
+        navigator = new ArrowNavigator(vibrator, camera, colorShader);
     }
 
     @Override

@@ -9,8 +9,8 @@ import ba.pohl1.hm.edu.vrlibrary.base.manager.RendererManager;
 import ba.pohl1.hm.edu.vrlibrary.base.rendering.Material;
 import ba.pohl1.hm.edu.vrlibrary.data.GeometryData;
 import ba.pohl1.hm.edu.vrlibrary.model.VRComponent;
-import ba.pohl1.hm.edu.vrlibrary.util.BAConstants;
-import ba.pohl1.hm.edu.vrlibrary.util.BAUtils;
+import ba.pohl1.hm.edu.vrlibrary.util.CGConstants;
+import ba.pohl1.hm.edu.vrlibrary.util.CGUtils;
 
 import static android.opengl.GLES20.GL_FLOAT;
 import static android.opengl.GLES20.GL_TRIANGLES;
@@ -51,19 +51,19 @@ public class VRRoom extends VRComponent {
         // Define walls
         wallNorth = new VRCube(colorShader);
         wallNorth.translateZ(-0.5f - 0.5f * DEPTH).translateY(0.5f * HEIGHT).scale(WIDTH, HEIGHT, 1);
-        wallNorth.setColor(BAConstants.COLOR_BLACK);
+        wallNorth.setColor(CGConstants.COLOR_BLACK);
 
         wallSouth = new VRCube(colorShader);
         wallSouth.translateZ(0.5f + 0.5f * DEPTH).translateY(0.5f * HEIGHT).scale(WIDTH, HEIGHT, 1);
-        wallSouth.setColor(BAConstants.COLOR_BLACK);
+        wallSouth.setColor(CGConstants.COLOR_BLACK);
 
         wallWest = new VRCube(colorShader);
         wallWest.translateX(-0.5f - 0.5f * WIDTH).translateY(0.5f * HEIGHT).scale(1, HEIGHT, DEPTH);
-        wallWest.setColor(BAConstants.COLOR_BLACK);
+        wallWest.setColor(CGConstants.COLOR_BLACK);
 
         wallEast = new VRCube(colorShader);
         wallEast.translateX(0.5f + 0.5f * WIDTH).translateY(0.5f * HEIGHT).scale(1, HEIGHT, DEPTH);
-        wallEast.setColor(BAConstants.COLOR_BLACK);
+        wallEast.setColor(CGConstants.COLOR_BLACK);
     }
 
     @Override
@@ -137,7 +137,7 @@ public class VRRoom extends VRComponent {
             glVertexAttribPointer(colorShader.getAttribute("a_color"), 4, GL_FLOAT, false, 0, colorsBuffer);
 
             glDrawArrays(GL_TRIANGLES, 0, verticesBuffer.capacity() / 3);
-            BAUtils.checkGLError(TAG, "Error while drawing!");
+            CGUtils.checkGLError(TAG, "Error while drawing!");
         }
 
     }
