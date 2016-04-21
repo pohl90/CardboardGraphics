@@ -61,6 +61,8 @@ public class StudentScene extends VRComponent {
         shader = AbstractCardboadActivity.shader;
         setup();
         setupShaderParams();
+        // Important line so that this scene will be called within the
+        // drawing pipeline.
         RendererManager.getInstance().add(this);
     }
 
@@ -88,22 +90,26 @@ public class StudentScene extends VRComponent {
         // Update collision box bounds
         updateBounds(this);
 
+        // Calculate Model-View and Model-View-Projection matrices
         Matrix.multiplyMM(matrices.vm, 0, view, 0, getFloat16(), 0);
         Matrix.multiplyMM(matrices.pvm, 0, projection, 0, matrices.vm, 0);
 
         // Put the parameters into the shaders
         glUniformMatrix4fv(locations.pvm, 1, false, matrices.pvm, 0);
         glUniformMatrix4fv(locations.vm, 1, false, matrices.vm, 0);
-
         glUniform4fv(locations.lightpos, 1, lightpos_eye, 0);
-
         glUniform4fv(locations.light_ambient, 1, light.ambient, 0);
         glUniform4fv(locations.light_diffuse, 1, light.diffuse, 0);
         glUniform4fv(locations.light_specular, 1, light.specular, 0);
 
+        // Finally draw the cone
         drawTopPart();
         drawBottomPart();
 
+        // Check for possible errors.
+        // If there is one, it is most probably related to an issue with the
+        // shader params. Copy this line under every 'glUniform' method call
+        // to identify the source of the error.
         CGUtils.checkGLError(TAG, "Error while drawing!");
     }
 
@@ -254,6 +260,9 @@ public class StudentScene extends VRComponent {
         normalsBottomBuffer = Material.createFloatBuffer(coneBottomNormals);
     }
 
+    /**
+     * Retrieve the shader parameters handles.
+     */
     private void setupShaderParams() {
         locations.vertex_in = shader.getAttribute("vertex_in");
         locations.color_in = shader.getAttribute("color_in");
