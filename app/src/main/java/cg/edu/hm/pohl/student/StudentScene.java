@@ -106,13 +106,8 @@ public class StudentScene extends VRComponent {
 
     private void drawTopPart() {
         glVertexAttribPointer(locations.vertex_in, 3, GL_FLOAT, false, 0, verticesBuffer);
-        glEnableVertexAttribArray(locations.vertex_in);
-
         glVertexAttribPointer(locations.color_in, 4, GL_FLOAT, false, 0, colorsBuffer);
-        glEnableVertexAttribArray(locations.color_in);
-
         glVertexAttribPointer(locations.normal_in, 3, GL_FLOAT, false, 0, normalsBuffer);
-        glEnableVertexAttribArray(locations.normal_in);
 
         // To get the amount of vertices we just need to divide the length of coneVertices by 3
         final int amountOfConeVertices = coneVertices.length / 3;
@@ -122,13 +117,8 @@ public class StudentScene extends VRComponent {
 
     private void drawBottomPart() {
         glVertexAttribPointer(locations.vertex_in, 3, GL_FLOAT, false, 0, verticesBottomBuffer);
-        glEnableVertexAttribArray(locations.vertex_in);
-
         glVertexAttribPointer(locations.color_in, 4, GL_FLOAT, false, 0, colorsBottomBuffer);
-        glEnableVertexAttribArray(locations.color_in);
-
         glVertexAttribPointer(locations.normal_in, 3, GL_FLOAT, false, 0, normalsBottomBuffer);
-        glEnableVertexAttribArray(locations.normal_in);
 
         // To get the amount of vertices we just need to divide the length of coneBottomVertices by 3
         final int amountOfConeBottomVertices = coneBottomVertices.length / 3;
@@ -264,5 +254,9 @@ public class StudentScene extends VRComponent {
         locations.light_ambient = shader.getUniform("light.ambient");
         locations.light_diffuse = shader.getUniform("light.diffuse");
         locations.light_specular = shader.getUniform("light.specular");
+
+        glEnableVertexAttribArray(locations.vertex_in);
+        glEnableVertexAttribArray(locations.color_in);
+        glEnableVertexAttribArray(locations.normal_in);
     }
 }
