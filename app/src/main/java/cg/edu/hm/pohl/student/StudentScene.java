@@ -60,20 +60,10 @@ public class StudentScene extends VRComponent {
         shader = AbstractCardboadActivity.studentSceneShader;
         setup();
         setupShaderParams();
-        // Important line so that this scene will be called within the
-        // drawing pipeline.
         RendererManager.getInstance().add(this);
     }
 
-    @Override
-    public boolean hasMaterial() {
-        // Pretend that we have a material set.
-        // Otherwise the RendererManager won't draw us...
-        return true;
-    }
-
     public void draw(final float[] view, float[] projection) {
-
         // Calculate light pos position in the eye space
         Matrix.multiplyMV(lightpos_eye, 0, view, 0, lightpos, 0);
 
