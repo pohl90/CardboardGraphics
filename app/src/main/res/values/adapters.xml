@@ -8,9 +8,9 @@
     <string-array name="navigator_array">
         <item>Tap</item>
         <item>Arrow</item>
-        <item>Tab Arrow</item>
+        <item>Tap Arrow</item>
         <item>Locked Arrow</item>
-        <item>Locked Tab Arrow</item>
+        <item>Locked Tap Arrow</item>
         <item>Game Controller</item>
     </string-array>
 </resources>
