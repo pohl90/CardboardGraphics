@@ -84,7 +84,9 @@ public class StudentScene extends VRComponent {
         identity();
 
         // Transform the shape
-        translateZ(-5f).translateY(1.0f).rotateZ(90);
+        translateZ(-5f);
+        translateY(1.0f);
+        rotateZ(90);
 
         // Update collision box bounds
         updateBounds(this);
