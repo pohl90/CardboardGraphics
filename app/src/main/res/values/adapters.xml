@@ -5,4 +5,12 @@
         <item>Front</item>
         <item>Front and back</item>
     </string-array>
+    <string-array name="navigator_array">
+        <item>Tap</item>
+        <item>Arrow</item>
+        <item>Tab Arrow</item>
+        <item>Locked Arrow</item>
+        <item>Locked Tab Arrow</item>
+        <item>Game Controller</item>
+    </string-array>
 </resources>

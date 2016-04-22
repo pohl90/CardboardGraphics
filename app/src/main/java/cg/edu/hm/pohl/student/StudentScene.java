@@ -7,7 +7,6 @@ import java.nio.FloatBuffer;
 
 import ba.pohl1.hm.edu.vrlibrary.base.Shader;
 import ba.pohl1.hm.edu.vrlibrary.base.manager.RendererManager;
-import ba.pohl1.hm.edu.vrlibrary.base.rendering.Material;
 import ba.pohl1.hm.edu.vrlibrary.model.VRComponent;
 import ba.pohl1.hm.edu.vrlibrary.util.CGUtils;
 import cg.edu.hm.pohl.AbstractCardboadActivity;
@@ -58,7 +57,7 @@ public class StudentScene extends VRComponent {
     private DataStructures.LightParameters light = new DataStructures.LightParameters();
 
     public StudentScene() {
-        shader = AbstractCardboadActivity.shader;
+        shader = AbstractCardboadActivity.studentSceneShader;
         setup();
         setupShaderParams();
         // Important line so that this scene will be called within the
@@ -251,13 +250,13 @@ public class StudentScene extends VRComponent {
             index++;
         }
 
-        verticesBuffer = Material.createFloatBuffer(coneVertices);
-        colorsBuffer = Material.createFloatBuffer(coneColors);
-        normalsBuffer = Material.createFloatBuffer(coneNormals);
+        verticesBuffer = CGUtils.createFloatBuffer(coneVertices);
+        colorsBuffer = CGUtils.createFloatBuffer(coneColors);
+        normalsBuffer = CGUtils.createFloatBuffer(coneNormals);
 
-        verticesBottomBuffer = Material.createFloatBuffer(coneBottomVertices);
-        colorsBottomBuffer = Material.createFloatBuffer(coneBottomColors);
-        normalsBottomBuffer = Material.createFloatBuffer(coneBottomNormals);
+        verticesBottomBuffer = CGUtils.createFloatBuffer(coneBottomVertices);
+        colorsBottomBuffer = CGUtils.createFloatBuffer(coneBottomColors);
+        normalsBottomBuffer = CGUtils.createFloatBuffer(coneBottomNormals);
     }
 
     /**

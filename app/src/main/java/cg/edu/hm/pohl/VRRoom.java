@@ -5,8 +5,8 @@ import android.opengl.Matrix;
 import java.nio.FloatBuffer;
 
 import ba.pohl1.hm.edu.vrlibrary.base.Shader;
+import ba.pohl1.hm.edu.vrlibrary.base.manager.CardboardGraphics;
 import ba.pohl1.hm.edu.vrlibrary.base.manager.RendererManager;
-import ba.pohl1.hm.edu.vrlibrary.base.rendering.Material;
 import ba.pohl1.hm.edu.vrlibrary.data.GeometryData;
 import ba.pohl1.hm.edu.vrlibrary.model.VRComponent;
 import ba.pohl1.hm.edu.vrlibrary.util.CGConstants;
@@ -17,7 +17,6 @@ import static android.opengl.GLES20.GL_TRIANGLES;
 import static android.opengl.GLES20.glDrawArrays;
 import static android.opengl.GLES20.glUniformMatrix4fv;
 import static android.opengl.GLES20.glVertexAttribPointer;
-import static cg.edu.hm.pohl.AbstractCardboadActivity.colorShader;
 
 /**
  * Created by Pohl on 14.04.2016.
@@ -44,33 +43,26 @@ public class VRRoom extends VRComponent {
 
         cubeData = GeometryGenerator.createCube();
 
-        floor = new VRCube(AbstractCardboadActivity.gridShader);
+        floor = new VRCube(CardboardGraphics.gridShader);
         floor.setCollisionEnabled(false);
         floor.translateY(-0.5f).scale(WIDTH, 1, DEPTH);
 
         // Define walls
-        wallNorth = new VRCube(colorShader);
+        wallNorth = new VRCube(CardboardGraphics.colorShader);
         wallNorth.translateZ(-0.5f - 0.5f * DEPTH).translateY(0.5f * HEIGHT).scale(WIDTH, HEIGHT, 1);
         wallNorth.setColor(CGConstants.COLOR_BLACK);
 
-        wallSouth = new VRCube(colorShader);
+        wallSouth = new VRCube(CardboardGraphics.colorShader);
         wallSouth.translateZ(0.5f + 0.5f * DEPTH).translateY(0.5f * HEIGHT).scale(WIDTH, HEIGHT, 1);
         wallSouth.setColor(CGConstants.COLOR_BLACK);
 
-        wallWest = new VRCube(colorShader);
+        wallWest = new VRCube(CardboardGraphics.colorShader);
         wallWest.translateX(-0.5f - 0.5f * WIDTH).translateY(0.5f * HEIGHT).scale(1, HEIGHT, DEPTH);
         wallWest.setColor(CGConstants.COLOR_BLACK);
 
-        wallEast = new VRCube(colorShader);
+        wallEast = new VRCube(CardboardGraphics.colorShader);
         wallEast.translateX(0.5f + 0.5f * WIDTH).translateY(0.5f * HEIGHT).scale(1, HEIGHT, DEPTH);
         wallEast.setColor(CGConstants.COLOR_BLACK);
-    }
-
-    @Override
-    public boolean isDirty() {
-        // Pretend that we are dirty.
-        // Otherwise the transformation won't be triggered...
-        return true;
     }
 
     @Override
@@ -99,10 +91,11 @@ public class VRRoom extends VRComponent {
         private FloatBuffer verticesBuffer;
         private FloatBuffer colorsBuffer;
 
+        private boolean transformed;
         public VRCube(final Shader cubeShader) {
             colorShader = cubeShader;
-            verticesBuffer = Material.createFloatBuffer(cubeData.getVerticesArray());
-            colorsBuffer = Material.createFloatBuffer(cubeData.getColorsArray());
+            verticesBuffer = CGUtils.createFloatBuffer(cubeData.getVerticesArray());
+            colorsBuffer = CGUtils.createFloatBuffer(cubeData.getColorsArray());
         }
 
         @Override
@@ -115,16 +108,17 @@ public class VRRoom extends VRComponent {
 
         @Override
         public boolean isDirty() {
-            return true;
+            return !transformed;
         }
 
         @Override
         public void draw(float[] view, float[] perspective) {
-            VRCube.this.getModelMatrix().set(VRRoom.this.getModelMatrix());
-
-            // Apply transformations
-            doTransform();
-
+            if(!transformed) {
+                getModelMatrix().set(VRRoom.this.getModelMatrix());
+                // Apply transformations
+                doTransform();
+                transformed = true;
+            }
             colorShader.use();
 
             glUniformMatrix4fv(colorShader.getUniform("u_model"), 1, false, getModelMatrix().getFloat16(), 0);

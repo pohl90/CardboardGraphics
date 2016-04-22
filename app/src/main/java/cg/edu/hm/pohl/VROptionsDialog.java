@@ -14,7 +14,15 @@ import android.widget.Switch;
 
 import java.util.Objects;
 
-import ba.pohl1.hm.edu.vrlibrary.base.Options;
+import ba.pohl1.hm.edu.vrlibrary.base.CGOptions;
+import ba.pohl1.hm.edu.vrlibrary.model.observer.VRObservable;
+import ba.pohl1.hm.edu.vrlibrary.navigation.ArrowNavigator;
+import ba.pohl1.hm.edu.vrlibrary.navigation.ArrowTapNavigator;
+import ba.pohl1.hm.edu.vrlibrary.navigation.GameControllerNavigator;
+import ba.pohl1.hm.edu.vrlibrary.navigation.LockedArrowNavigator;
+import ba.pohl1.hm.edu.vrlibrary.navigation.LockedArrowTapNavigator;
+import ba.pohl1.hm.edu.vrlibrary.navigation.TapNavigator;
+import ba.pohl1.hm.edu.vrlibrary.navigation.VRNavigator;
 
 import static android.widget.ArrayAdapter.createFromResource;
 
@@ -30,6 +38,7 @@ public class VROptionsDialog extends Dialog {
     private static final String TEXT_CW = "CW";
 
     // Widgets
+    private Spinner navigatorChooser;
     private Switch focusingSwitch;
     private Switch collisionSwitch;
     private Switch cullingSwitch;
@@ -37,6 +46,7 @@ public class VROptionsDialog extends Dialog {
     private Switch frontFaceSwitch;
     private EditText animationSpeedText;
     private EditText cameraSpeedText;
+    private VRObservable<Class<? extends VRNavigator>> navigatorClassProperty = new VRObservable<>();
 
     public VROptionsDialog(Context context) {
         super(context);
@@ -44,6 +54,7 @@ public class VROptionsDialog extends Dialog {
         setTitle("Options");
         setCancelable(true);
 
+        navigatorChooser = (Spinner) findViewById(R.id.navigatorChooser);
         focusingSwitch = (Switch) findViewById(R.id.focusingSwitch);
         collisionSwitch = (Switch) findViewById(R.id.collisionSwitch);
         cullingSwitch = (Switch) findViewById(R.id.cullingSwitch);
@@ -56,6 +67,16 @@ public class VROptionsDialog extends Dialog {
         updateText();
     }
 
+    @Override
+    public void show() {
+        navigatorChooser.setSelection(navigatorClassToPos(CGOptions.NAVIGATOR));
+        super.show();
+    }
+
+    public VRObservable<Class<? extends VRNavigator>> getNavigatorClassProperty() {
+        return navigatorClassProperty;
+    }
+
     private void updateText() {
         focusingSwitch.setText(focusingSwitch.isChecked() ? TEXT_ENABLED : TEXT_DISABLED);
         collisionSwitch.setText(collisionSwitch.isChecked() ? TEXT_ENABLED : TEXT_DISABLED);
@@ -64,24 +85,36 @@ public class VROptionsDialog extends Dialog {
     }
 
     private void initOptionsListeners() {
+        navigatorChooser.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                final Class<? extends VRNavigator> navClass = posToNavigatorClass(position);
+                navigatorClassProperty.set(navClass);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         focusingSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Options.FOCUSING_ENABLED = isChecked;
+                CGOptions.FOCUSING_ENABLED = isChecked;
                 updateText();
             }
         });
         collisionSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Options.COLLISION_ENABLED = isChecked;
+                CGOptions.COLLISION_ENABLED = isChecked;
                 updateText();
             }
         });
         cullingSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Options.CULLING_ENABLED = isChecked;
+                CGOptions.CULLING_ENABLED = isChecked;
                 updateText();
             }
         });
@@ -90,11 +123,11 @@ public class VROptionsDialog extends Dialog {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 final Object item = parent.getItemAtPosition(position);
                 if(Objects.equals(item, "Front")) {
-                    Options.CULLING_MODE = GLES20.GL_FRONT;
+                    CGOptions.CULLING_MODE = GLES20.GL_FRONT;
                 } else if(Objects.equals(item, "Back")) {
-                    Options.CULLING_MODE = GLES20.GL_BACK;
+                    CGOptions.CULLING_MODE = GLES20.GL_BACK;
                 } else {
-                    Options.CULLING_MODE = GLES20.GL_FRONT_AND_BACK;
+                    CGOptions.CULLING_MODE = GLES20.GL_FRONT_AND_BACK;
                 }
             }
 
@@ -107,9 +140,9 @@ public class VROptionsDialog extends Dialog {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked) {
-                    Options.FRONT_FACE = GLES20.GL_CCW;
+                    CGOptions.FRONT_FACE = GLES20.GL_CCW;
                 } else {
-                    Options.FRONT_FACE = GLES20.GL_CW;
+                    CGOptions.FRONT_FACE = GLES20.GL_CW;
                 }
                 updateText();
             }
@@ -128,7 +161,7 @@ public class VROptionsDialog extends Dialog {
             @Override
             public void afterTextChanged(Editable s) {
                 if(s.length() > 0) {
-                    Options.ANIMATION_SPEED_MODIFIER = Float.valueOf(s.toString());
+                    CGOptions.ANIMATION_SPEED_MODIFIER = Float.valueOf(s.toString());
                 }
             }
         });
@@ -146,21 +179,22 @@ public class VROptionsDialog extends Dialog {
             @Override
             public void afterTextChanged(Editable s) {
                 if(s.length() > 0) {
-                    Options.CAMERA_SPEED_MODIFIER = Float.valueOf(s.toString());
+                    CGOptions.CAMERA_SPEED_MODIFIER = Float.valueOf(s.toString());
                 }
             }
         });
     }
 
     private void initOptions() {
-        focusingSwitch.setChecked(Options.FOCUSING_ENABLED);
-        collisionSwitch.setChecked(Options.COLLISION_ENABLED);
-        cullingSwitch.setChecked(Options.CULLING_ENABLED);
+        navigatorChooser.setAdapter(createFromResource(getContext(), R.array.navigator_array, R.layout.support_simple_spinner_dropdown_item));
+        focusingSwitch.setChecked(CGOptions.FOCUSING_ENABLED);
+        collisionSwitch.setChecked(CGOptions.COLLISION_ENABLED);
+        cullingSwitch.setChecked(CGOptions.CULLING_ENABLED);
         cullingChooser.setAdapter(createFromResource(getContext(), R.array.culling_array, R.layout.support_simple_spinner_dropdown_item));
-        cullingChooser.setSelection(cullingModeToPos(Options.CULLING_MODE));
-        frontFaceSwitch.setChecked(Options.FRONT_FACE == GLES20.GL_CCW);
-        animationSpeedText.setText(Float.toString(Options.ANIMATION_SPEED_MODIFIER));
-        cameraSpeedText.setText(Float.toString(Options.CAMERA_SPEED_MODIFIER));
+        cullingChooser.setSelection(cullingModeToPos(CGOptions.CULLING_MODE));
+        frontFaceSwitch.setChecked(CGOptions.FRONT_FACE == GLES20.GL_CCW);
+        animationSpeedText.setText(Float.toString(CGOptions.ANIMATION_SPEED_MODIFIER));
+        cameraSpeedText.setText(Float.toString(CGOptions.CAMERA_SPEED_MODIFIER));
     }
 
     private int cullingModeToPos(final int id) {
@@ -171,5 +205,39 @@ public class VROptionsDialog extends Dialog {
             return 0;
         }
         return 2;
+    }
+
+    private int navigatorClassToPos(final Class<? extends VRNavigator> clazz) {
+        if(Objects.equals(clazz, TapNavigator.class)) {
+            return 0;
+        } else if(Objects.equals(clazz, ArrowNavigator.class)) {
+            return 1;
+        } else if(Objects.equals(clazz, ArrowTapNavigator.class)) {
+            return 2;
+        } else if(Objects.equals(clazz, LockedArrowNavigator.class)) {
+            return 3;
+        } else if(Objects.equals(clazz, LockedArrowTapNavigator.class)) {
+            return 4;
+        } else if(Objects.equals(clazz, GameControllerNavigator.class)) {
+            return 5;
+        }
+        return -1;
+    }
+
+    private Class<? extends VRNavigator> posToNavigatorClass(final int pos) {
+        if(pos == 0) {
+            return TapNavigator.class;
+        } else if(pos == 1) {
+            return ArrowNavigator.class;
+        } else if(pos == 2) {
+            return ArrowTapNavigator.class;
+        } else if(pos == 3) {
+            return LockedArrowNavigator.class;
+        } else if(pos == 4) {
+            return LockedArrowTapNavigator.class;
+        } else if(pos == 5) {
+            return GameControllerNavigator.class;
+        }
+        return null;
     }
 }
