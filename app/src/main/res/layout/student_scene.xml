@@ -24,4 +24,11 @@
         android:onClick="showOptions"
         android:scaleType="fitXY"
         android:src="@drawable/options_icon"/>
+
+    <ba.pohl1.hm.edu.vrlibrary.ui.hud.VRHud
+        android:id="@+id/hud_overlay"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"/>
 </RelativeLayout>
