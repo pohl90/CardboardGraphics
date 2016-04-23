@@ -14,7 +14,6 @@ import cg.edu.hm.pohl.DataStructures;
 
 import static android.opengl.GLES20.GL_FLOAT;
 import static android.opengl.GLES20.glDrawArrays;
-import static android.opengl.GLES20.glEnableVertexAttribArray;
 import static android.opengl.GLES20.glUniform4fv;
 import static android.opengl.GLES20.glUniformMatrix4fv;
 import static android.opengl.GLES20.glVertexAttribPointer;
@@ -26,9 +25,14 @@ public class StudentScene extends VRComponent {
 
     private static final String TAG = "StudentScene";
     private static final int TESSELLATION = 8;
+    private static final int NUMBER_OF_VERTICES = TESSELLATION * 3 * 3 * 2;
     private static final float RADIUS = .5f;
     private static final double PI_2 = 2.0f * Math.PI;
     private static final double DELTA_ANGLE = (Math.PI / (TESSELLATION / 2));
+
+    private static final int FLOATS_PER_VERTEX = 3;
+    private static final int FLOATS_PER_COLOR = 4;
+    private static final int FLOATS_PER_NORMAL = 3;
 
     private float[] coneVertices;
     private float[] coneColors;
@@ -46,9 +50,7 @@ public class StudentScene extends VRComponent {
     private Shader shader;
 
     private DataStructures.Matrices matrices = new DataStructures.Matrices();
-
     private DataStructures.Locations locations = new DataStructures.Locations();
-
     private DataStructures.AnimationParameters animation = new DataStructures.AnimationParameters();
 
     private float[] lightpos = { 0.f, 5.f, -4.f, 1.f };
@@ -58,8 +60,19 @@ public class StudentScene extends VRComponent {
 
     public StudentScene() {
         shader = CardboardGraphicsActivity.studentSceneShader;
-        setup();
-        setupShaderParams();
+        createCone();
+        // Get the attribute and uniform handles used to delegate data from
+        // the CPU to the GPU
+        locations.vertex_in = shader.getAttribute("vertex_in");
+        locations.color_in = shader.getAttribute("color_in");
+        locations.normal_in = shader.getAttribute("normal_in");
+        locations.pvm = shader.getUniform("pvm");
+        locations.vm = shader.getUniform("vm");
+        locations.lightpos = shader.getUniform("lightpos");
+        locations.light_ambient = shader.getUniform("light.ambient");
+        locations.light_diffuse = shader.getUniform("light.diffuse");
+        locations.light_specular = shader.getUniform("light.specular");
+        // Add this VRComponent in order to be rendered
         RendererManager.getInstance().add(this);
     }
 
@@ -105,46 +118,42 @@ public class StudentScene extends VRComponent {
     }
 
     private void drawTopPart() {
-        glVertexAttribPointer(locations.vertex_in, 3, GL_FLOAT, false, 0, verticesBuffer);
-        glVertexAttribPointer(locations.color_in, 4, GL_FLOAT, false, 0, colorsBuffer);
-        glVertexAttribPointer(locations.normal_in, 3, GL_FLOAT, false, 0, normalsBuffer);
+        glVertexAttribPointer(locations.vertex_in, FLOATS_PER_VERTEX, GL_FLOAT, false, 0, verticesBuffer);
+        glVertexAttribPointer(locations.color_in, FLOATS_PER_COLOR, GL_FLOAT, false, 0, colorsBuffer);
+        glVertexAttribPointer(locations.normal_in, FLOATS_PER_NORMAL, GL_FLOAT, false, 0, normalsBuffer);
 
-        // To get the amount of vertices we just need to divide the length of coneVertices by 3
-        final int amountOfConeVertices = coneVertices.length / 3;
-        // Draw
-        glDrawArrays(GLES20.GL_TRIANGLES, 0, amountOfConeVertices);
+        glDrawArrays(GLES20.GL_TRIANGLES, 0, coneVertices.length / FLOATS_PER_VERTEX);
     }
 
     private void drawBottomPart() {
-        glVertexAttribPointer(locations.vertex_in, 3, GL_FLOAT, false, 0, verticesBottomBuffer);
-        glVertexAttribPointer(locations.color_in, 4, GL_FLOAT, false, 0, colorsBottomBuffer);
-        glVertexAttribPointer(locations.normal_in, 3, GL_FLOAT, false, 0, normalsBottomBuffer);
+        glVertexAttribPointer(locations.vertex_in, FLOATS_PER_VERTEX, GL_FLOAT, false, 0, verticesBottomBuffer);
+        glVertexAttribPointer(locations.color_in, FLOATS_PER_COLOR, GL_FLOAT, false, 0, colorsBottomBuffer);
+        glVertexAttribPointer(locations.normal_in, FLOATS_PER_NORMAL, GL_FLOAT, false, 0, normalsBottomBuffer);
 
-        // To get the amount of vertices we just need to divide the length of coneBottomVertices by 3
-        final int amountOfConeBottomVertices = coneBottomVertices.length / 3;
-        // Draw
-        glDrawArrays(GLES20.GL_TRIANGLES, 0, amountOfConeBottomVertices);
+        glDrawArrays(GLES20.GL_TRIANGLES, 0, coneBottomVertices.length / FLOATS_PER_VERTEX);
     }
 
-    private void setup() {
-        final int numberOfVertices = TESSELLATION * 3 * 3 * 2;
-        coneVertices = new float[numberOfVertices];
-        coneColors = new float[numberOfVertices / 3 * 4];
-        coneNormals = new float[numberOfVertices];
-        coneBottomVertices = new float[numberOfVertices];
-        coneBottomColors = new float[numberOfVertices / 3 * 4];
-        coneBottomNormals = new float[numberOfVertices];
+    private void createCone() {
+        coneVertices = new float[NUMBER_OF_VERTICES];
+        coneColors = new float[NUMBER_OF_VERTICES / 3 * 4];
+        coneNormals = new float[NUMBER_OF_VERTICES];
+        coneBottomVertices = new float[NUMBER_OF_VERTICES];
+        coneBottomColors = new float[NUMBER_OF_VERTICES / 3 * 4];
+        coneBottomNormals = new float[NUMBER_OF_VERTICES];
 
         int index = 0;
         for(float angle = 0.0f; angle < PI_2; angle += DELTA_ANGLE) {
-            // calculate x and z of the cone
+            // Calculate x and z of the cone
             float x1 = (float) (RADIUS * Math.sin(angle));
             float z1 = (float) (RADIUS * Math.cos(angle));
             float x2 = (float) (RADIUS * Math.sin(angle + DELTA_ANGLE));
             float z2 = (float) (RADIUS * Math.cos(angle + DELTA_ANGLE));
 
+            // Calculate offset for vertices and colors
             final int vertexIndex = index * 9;
             final int colorIndex = index * 12;
+            // Increment the index
+            index++;
 
             // First vertex
             coneVertices[vertexIndex] = 0;
@@ -190,8 +199,8 @@ public class StudentScene extends VRComponent {
             coneBottomNormals[vertexIndex + 7] = 1f;
             coneBottomNormals[vertexIndex + 8] = 0;
 
-            float colorR, colorG, colorB, colorA;
             // Alternate the color
+            float colorR, colorG, colorB, colorA;
             if((index % 2) == 0) {
                 colorR = 1f;
                 colorG = 0f;
@@ -228,10 +237,9 @@ public class StudentScene extends VRComponent {
             coneBottomColors[colorIndex + 9] = colorG;
             coneBottomColors[colorIndex + 10] = colorB;
             coneBottomColors[colorIndex + 11] = colorA;
-            // Increment the index
-            index++;
         }
 
+        // Create buffers needed by the GPU
         verticesBuffer = CGUtils.createFloatBuffer(coneVertices);
         colorsBuffer = CGUtils.createFloatBuffer(coneColors);
         normalsBuffer = CGUtils.createFloatBuffer(coneNormals);
@@ -239,24 +247,5 @@ public class StudentScene extends VRComponent {
         verticesBottomBuffer = CGUtils.createFloatBuffer(coneBottomVertices);
         colorsBottomBuffer = CGUtils.createFloatBuffer(coneBottomColors);
         normalsBottomBuffer = CGUtils.createFloatBuffer(coneBottomNormals);
-    }
-
-    /**
-     * Retrieve the shader parameters handles.
-     */
-    private void setupShaderParams() {
-        locations.vertex_in = shader.getAttribute("vertex_in");
-        locations.color_in = shader.getAttribute("color_in");
-        locations.normal_in = shader.getAttribute("normal_in");
-        locations.pvm = shader.getUniform("pvm");
-        locations.vm = shader.getUniform("vm");
-        locations.lightpos = shader.getUniform("lightpos");
-        locations.light_ambient = shader.getUniform("light.ambient");
-        locations.light_diffuse = shader.getUniform("light.diffuse");
-        locations.light_specular = shader.getUniform("light.specular");
-
-        glEnableVertexAttribArray(locations.vertex_in);
-        glEnableVertexAttribArray(locations.color_in);
-        glEnableVertexAttribArray(locations.normal_in);
     }
 }

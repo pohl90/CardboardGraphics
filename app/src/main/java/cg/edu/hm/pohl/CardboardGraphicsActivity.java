@@ -5,6 +5,7 @@ import android.os.Bundle;
 import ba.pohl1.hm.edu.vrlibrary.base.Shader;
 import ba.pohl1.hm.edu.vrlibrary.base.manager.CardboardGraphics;
 import ba.pohl1.hm.edu.vrlibrary.model.VRComponent;
+import ba.pohl1.hm.edu.vrlibrary.navigation.arrow.LockedArrowTapNavigator;
 import ba.pohl1.hm.edu.vrlibrary.ui.AbstractCardboardActivity;
 import ba.pohl1.hm.edu.vrlibrary.ui.hud.VRHud;
 import cg.edu.hm.pohl.student.StudentScene;
@@ -48,6 +49,7 @@ public class CardboardGraphicsActivity extends AbstractCardboardActivity {
         CardboardGraphics.camera.translateY(1.25f);
         CardboardGraphics.camera.setCanMoveInY(false);
         vrRoom.add(studentScene);
+        setNavigator(new LockedArrowTapNavigator());
         return vrRoom;
     }
 
