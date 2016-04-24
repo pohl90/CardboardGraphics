@@ -1,13 +1,14 @@
 package cg.edu.hm.pohl;
 
-import android.os.Bundle;
-
-import ba.pohl1.hm.edu.vrlibrary.base.Shader;
-import ba.pohl1.hm.edu.vrlibrary.base.manager.CardboardGraphics;
+import ba.pohl1.hm.edu.vrlibrary.maths.Vector3;
 import ba.pohl1.hm.edu.vrlibrary.model.VRComponent;
+import ba.pohl1.hm.edu.vrlibrary.navigation.VRNavigator;
 import ba.pohl1.hm.edu.vrlibrary.navigation.arrow.LockedArrowTapNavigator;
+import ba.pohl1.hm.edu.vrlibrary.navigation.waypoint.WaypointNavigator;
 import ba.pohl1.hm.edu.vrlibrary.ui.AbstractCardboardActivity;
-import ba.pohl1.hm.edu.vrlibrary.ui.hud.VRHud;
+import ba.pohl1.hm.edu.vrlibrary.util.CardboardGraphics;
+import ba.pohl1.hm.edu.vrlibrary.util.Shader;
+import ba.pohl1.hm.edu.vrlibrary.model.shapes.VRRoom;
 import cg.edu.hm.pohl.student.StudentScene;
 
 /**
@@ -16,16 +17,10 @@ import cg.edu.hm.pohl.student.StudentScene;
 public class CardboardGraphicsActivity extends AbstractCardboardActivity {
 
     public static Shader studentSceneShader;
+    private static final int WAYPOINTS = 6;
+    private static final float WAYPOINTS_DISTANCE = 2.5f;
 
-    private VRRoom vrRoom;
     private StudentScene studentScene;
-    private VRHud overlay;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        overlay = (VRHud) findViewById(R.id.hud_overlay);
-    }
 
     @Override
     protected int getCardboardViewId() {
@@ -44,13 +39,23 @@ public class CardboardGraphicsActivity extends AbstractCardboardActivity {
 
     @Override
     protected VRComponent createScene() {
-        vrRoom = new VRRoom();
-        studentScene = new StudentScene();
-        CardboardGraphics.camera.translateY(1.25f);
+        CardboardGraphics.camera.translateY(2f);
         CardboardGraphics.camera.setCanMoveInY(false);
-        vrRoom.add(studentScene);
         setNavigator(new LockedArrowTapNavigator());
+
+        final VRRoom vrRoom = new VRRoom(25, 10, 25);
+
+        studentScene = new StudentScene();
+        vrRoom.add(studentScene);
         return vrRoom;
+    }
+
+    @Override
+    public void setNavigator(VRNavigator navigator) {
+        super.setNavigator(navigator);
+        if(navigator instanceof WaypointNavigator) {
+            setWaypoints();
+        }
     }
 
     @Override
@@ -65,10 +70,20 @@ public class CardboardGraphicsActivity extends AbstractCardboardActivity {
         studentSceneShader.dispose();
     }
 
-    @Override
-    protected void onDestroy() {
-        vrRoom.dispose();
-        studentScene.dispose();
-        super.onDestroy();
+    private void setWaypoints() {
+        // Clear all default way points
+        getNavigator().dispose();
+
+        final Vector3 scenePos = studentScene.getPosition();
+        float x = scenePos.x;
+        float y = scenePos.y;
+        float z = scenePos.z;
+        float radius = WAYPOINTS_DISTANCE;
+        float deltaAngle = 360 / WAYPOINTS;
+        for(int angle = 0; angle < 360; angle += deltaAngle) {
+            final float rX = (float) Math.cos(Math.toRadians(angle)) * radius;
+            final float rZ = (float) Math.sin(Math.toRadians(angle)) * radius;
+            ((WaypointNavigator) getNavigator()).addWaypointAt(0.2f, x + rX, y + 1f, z + rZ);
+        }
     }
 }

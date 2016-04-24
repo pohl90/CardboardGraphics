@@ -3,10 +3,9 @@ package cg.edu.hm.pohl;
 /**
  * Created by Markus Miller on 25.02.2016.
  */
-public class DataStructures
-{
-    public static class Locations
-    {
+public class DataStructures {
+
+    public static class Locations {
         public int vertex_in;
         public int color_in;
         public int normal_in;
@@ -21,9 +20,7 @@ public class DataStructures
         public int light_specular;
     }
 
-
-    public static class Matrices
-    {
+    public static class Matrices {
         public float model[] = new float[16];
         public float view[] = new float[16];
         public float cam[] = new float[16];
@@ -37,15 +34,11 @@ public class DataStructures
         public float[] headView = new float[16];
     }
 
-
-    public static class AnimationParameters
-    {
+    public static class AnimationParameters {
         public float rotationAngle = 0.f;
     }
 
-
-    public static class LightParameters
-    {
+    public static class LightParameters {
         public float[] ambient = { 1.f, 1.f, 1.f, 1.f };
         public float[] diffuse = { 0.f, 0.f, 0.f, 0.f };
         public float[] specular = { 0.f, 0.f, 0.f, 0.f };

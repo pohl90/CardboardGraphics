@@ -5,10 +5,10 @@ import android.opengl.Matrix;
 
 import java.nio.FloatBuffer;
 
-import ba.pohl1.hm.edu.vrlibrary.base.Shader;
-import ba.pohl1.hm.edu.vrlibrary.base.manager.RendererManager;
 import ba.pohl1.hm.edu.vrlibrary.model.VRComponent;
+import ba.pohl1.hm.edu.vrlibrary.rendering.RendererManager;
 import ba.pohl1.hm.edu.vrlibrary.util.CGUtils;
+import ba.pohl1.hm.edu.vrlibrary.util.Shader;
 import cg.edu.hm.pohl.CardboardGraphicsActivity;
 import cg.edu.hm.pohl.DataStructures;
 
@@ -61,7 +61,7 @@ public class StudentScene extends VRComponent {
     public StudentScene() {
         shader = CardboardGraphicsActivity.studentSceneShader;
         createCone();
-        // Get the attribute and uniform handles used to delegate data from
+        // Get the shader's attribute and uniform handles used to delegate data from
         // the CPU to the GPU
         locations.vertex_in = shader.getAttribute("vertex_in");
         locations.color_in = shader.getAttribute("color_in");
@@ -77,9 +77,6 @@ public class StudentScene extends VRComponent {
     }
 
     public void draw(final float[] view, float[] projection) {
-        // Calculate light pos position in the eye space
-        Matrix.multiplyMV(lightpos_eye, 0, view, 0, lightpos, 0);
-
         // Use the shader
         shader.use();
 
@@ -88,11 +85,14 @@ public class StudentScene extends VRComponent {
 
         // Transform the shape
         translateZ(-5f);
-        translateY(1.0f);
+        translateY(2.0f);
         rotateZ(90);
 
         // Update collision box bounds
         updateBounds(this);
+
+        // Calculate light position in the eye space
+        Matrix.multiplyMV(lightpos_eye, 0, view, 0, lightpos, 0);
 
         // Calculate Model-View and Model-View-Projection matrices
         Matrix.multiplyMM(matrices.vm, 0, view, 0, getFloat16(), 0);
