@@ -110,12 +110,7 @@ public class ArrowNavigator extends TapNavigator implements VRDrawableNavigator,
             currentArrow.setActive(running);
             vibrator.vibrate(200);
             if(CardboardGraphics.hasHUD()) {
-                UIUtils.runInUIThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        CardboardGraphics.hud.show3DToast(running ? "Enabled" : "Disabled");
-                    }
-                });
+                CardboardGraphics.hud.show3DToast(running ? "Enabled" : "Disabled");
             }
         }
     }

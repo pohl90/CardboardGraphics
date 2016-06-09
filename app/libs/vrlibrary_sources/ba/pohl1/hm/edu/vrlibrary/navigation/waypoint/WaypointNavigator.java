@@ -11,7 +11,6 @@ import ba.pohl1.hm.edu.vrlibrary.physics.focus.FocusManager;
 import ba.pohl1.hm.edu.vrlibrary.physics.transitions.TranslateTransition;
 import ba.pohl1.hm.edu.vrlibrary.util.CardboardGraphics;
 import ba.pohl1.hm.edu.vrlibrary.util.Timer;
-import ba.pohl1.hm.edu.vrlibrary.util.UIUtils;
 
 import static ba.pohl1.hm.edu.vrlibrary.util.CardboardGraphics.camera;
 
@@ -65,11 +64,8 @@ public class WaypointNavigator implements VRNavigator, FocusListener {
 
     @Override
     public void navigate(VRCamera camera, float deltaMove) {
-        if(translateTransition != null) {
-            translateTransition.execute();
-            if(translateTransition.isDone()) {
-                translateTransition = null;
-            }
+        if (translateTransition != null && translateTransition.isDone()) {
+            translateTransition = null;
         }
     }
 
@@ -85,7 +81,7 @@ public class WaypointNavigator implements VRNavigator, FocusListener {
 
     @Override
     public void onCardboardTrigger() {
-        if(focusedWaypount != null) {
+        if (focusedWaypount != null && translateTransition == null) {
             translateTransition = new TranslateTransition(camera, camera.getPosition().copy().mult(-1f), focusedWaypount.getPosition(), 2);
         }
     }
@@ -103,12 +99,7 @@ public class WaypointNavigator implements VRNavigator, FocusListener {
     public void focusGained(VRComponent component) {
         focusedWaypount = (VRWaypoint) component;
         if(CardboardGraphics.hasHUD()) {
-            UIUtils.runInUIThread(new Runnable() {
-                @Override
-                public void run() {
-                    CardboardGraphics.hud.show3DToast("Tap to go there");
-                }
-            });
+            CardboardGraphics.hud.show3DToast("Tap to go there");
         }
     }
 

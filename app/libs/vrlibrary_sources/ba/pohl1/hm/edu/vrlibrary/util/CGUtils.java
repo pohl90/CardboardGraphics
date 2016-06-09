@@ -28,16 +28,14 @@ public class CGUtils {
 
     private static final Map<Integer, Integer> cachedTextureHandles = new HashMap<>();
 
-    private static final Vector3 objectToCamera = new Vector3();
     // Help vector so we don't have to instantiate every time a new vector
-    private static final Vector3 helpVector = new Vector3();
+    private static final Vector3 objectToCamera = new Vector3();
 
     public static boolean isLookingAt(final Vector3 headView, final VRComponent camera, final VRComponent object, final float angleLimit) {
         final Vector3 cameraPos = camera.getBoundingBox().getPosition();
         final Vector3 position = object.getBoundingBox().getPosition();
         objectToCamera.set(position.x, position.y, position.z).sub(cameraPos);
 
-        helpVector.set(headView.x, headView.y, headView.z);
         final double angle = Vector3.getAngleBetween(headView, objectToCamera.normalize());
         return angle <= angleLimit;
     }

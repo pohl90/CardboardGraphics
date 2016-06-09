@@ -23,6 +23,9 @@ import ba.pohl1.hm.edu.vrlibrary.navigation.arrow.ArrowTapNavigator;
 import ba.pohl1.hm.edu.vrlibrary.navigation.arrow.LockedArrowNavigator;
 import ba.pohl1.hm.edu.vrlibrary.navigation.arrow.LockedArrowTapNavigator;
 import ba.pohl1.hm.edu.vrlibrary.navigation.gamecontroller.GameControllerNavigator;
+import ba.pohl1.hm.edu.vrlibrary.navigation.gamecontroller.LockedGameControllerNavigator;
+import ba.pohl1.hm.edu.vrlibrary.navigation.gamecontroller.SandboxGameControllerNavigator;
+import ba.pohl1.hm.edu.vrlibrary.navigation.platform.PlatformNavigator;
 import ba.pohl1.hm.edu.vrlibrary.navigation.waypoint.WaypointNavigator;
 import ba.pohl1.hm.edu.vrlibrary.util.CGOptions;
 
@@ -44,6 +47,7 @@ public class VROptionsDialog extends Dialog {
     private Switch focusingSwitch;
     private Switch collisionSwitch;
     private Switch cullingSwitch;
+    private Switch normalsSwitch;
     private Spinner cullingChooser;
     private Switch frontFaceSwitch;
     private EditText animationSpeedText;
@@ -60,6 +64,7 @@ public class VROptionsDialog extends Dialog {
         focusingSwitch = (Switch) findViewById(R.id.focusingSwitch);
         collisionSwitch = (Switch) findViewById(R.id.collisionSwitch);
         cullingSwitch = (Switch) findViewById(R.id.cullingSwitch);
+        normalsSwitch = (Switch) findViewById(R.id.normalsSwitch);
         cullingChooser = (Spinner) findViewById(R.id.cullingChooser);
         frontFaceSwitch = (Switch) findViewById(R.id.frontFaceSwitch);
         animationSpeedText = (EditText) findViewById(R.id.animationSpeedText);
@@ -83,6 +88,7 @@ public class VROptionsDialog extends Dialog {
         focusingSwitch.setText(focusingSwitch.isChecked() ? TEXT_ENABLED : TEXT_DISABLED);
         collisionSwitch.setText(collisionSwitch.isChecked() ? TEXT_ENABLED : TEXT_DISABLED);
         cullingSwitch.setText(cullingSwitch.isChecked() ? TEXT_ENABLED : TEXT_DISABLED);
+        normalsSwitch.setText(normalsSwitch.isChecked() ? TEXT_ENABLED : TEXT_DISABLED);
         frontFaceSwitch.setText(frontFaceSwitch.isChecked() ? TEXT_CCW : TEXT_CW);
     }
 
@@ -110,6 +116,13 @@ public class VROptionsDialog extends Dialog {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 CGOptions.COLLISION_ENABLED = isChecked;
+                updateText();
+            }
+        });
+        normalsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                CGOptions.NORMALS_VISIBLE = isChecked;
                 updateText();
             }
         });
@@ -192,6 +205,7 @@ public class VROptionsDialog extends Dialog {
         focusingSwitch.setChecked(CGOptions.FOCUSING_ENABLED);
         collisionSwitch.setChecked(CGOptions.COLLISION_ENABLED);
         cullingSwitch.setChecked(CGOptions.CULLING_ENABLED);
+        normalsSwitch.setChecked(CGOptions.NORMALS_VISIBLE);
         cullingChooser.setAdapter(createFromResource(getContext(), R.array.culling_array, R.layout.support_simple_spinner_dropdown_item));
         cullingChooser.setSelection(cullingModeToPos(CGOptions.CULLING_MODE));
         frontFaceSwitch.setChecked(CGOptions.FRONT_FACE == GLES20.GL_CCW);
@@ -222,8 +236,14 @@ public class VROptionsDialog extends Dialog {
             return 4;
         } else if(Objects.equals(clazz, GameControllerNavigator.class)) {
             return 5;
-        } else if(Objects.equals(clazz, WaypointNavigator.class)) {
+        } else if (Objects.equals(clazz, LockedGameControllerNavigator.class)) {
             return 6;
+        } else if (Objects.equals(clazz, SandboxGameControllerNavigator.class)) {
+            return 7;
+        } else if (Objects.equals(clazz, WaypointNavigator.class)) {
+            return 8;
+        } else if (Objects.equals(clazz, PlatformNavigator.class)) {
+            return 9;
         }
         return -1;
     }
@@ -242,7 +262,13 @@ public class VROptionsDialog extends Dialog {
         } else if(pos == 5) {
             return GameControllerNavigator.class;
         } else if(pos == 6) {
+            return LockedGameControllerNavigator.class;
+        } else if (pos == 7) {
+            return SandboxGameControllerNavigator.class;
+        } else if (pos == 8) {
             return WaypointNavigator.class;
+        } else if (pos == 9) {
+            return PlatformNavigator.class;
         }
         return null;
     }

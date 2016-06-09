@@ -12,7 +12,7 @@ import ba.pohl1.hm.edu.vrlibrary.navigation.VRNavigator;
  */
 public class GameControllerNavigator implements VRNavigator {
 
-    private GameController gameController;
+    protected GameController gameController;
 
     public GameControllerNavigator() {
         gameController = new GameController();

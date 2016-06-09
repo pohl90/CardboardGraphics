@@ -20,36 +20,23 @@ public final class SpatialHashGenerator {
         }
         final float minX = box.getMinX();
         final float maxX = box.getMaxX();
-        final int indexMinX = getIndex(getWidth(), getCellWidth(), minX);
-        final int indexMaxX = getIndex(getWidth(), getCellWidth(), maxX);
-        if(indexMinX == -1 || indexMaxX == -1) {
-            return null;
-        }
+        final int indexMinX = getIndex(getCellWidth(), minX);
+        final int indexMaxX = getIndex(getCellWidth(), maxX);
 
         final float minY = box.getMinY();
         final float maxY = box.getMaxY();
-        final int indexMinY = getIndex(getHeight(), getCellHeight(), minY);
-        final int indexMaxY = getIndex(getHeight(), getCellHeight(), maxY);
-        if(indexMinY == -1 || indexMaxY == -1) {
-            return null;
-        }
+        final int indexMinY = getIndex(getCellHeight(), minY);
+        final int indexMaxY = getIndex(getCellHeight(), maxY);
 
         final float minZ = box.getMinZ();
         final float maxZ = box.getMaxZ();
-        final int indexMinZ = getIndex(getDepth(), getCellDepth(), minZ);
-        final int indexMaxZ = getIndex(getDepth(), getCellDepth(), maxZ);
-        if(indexMinZ == -1 || indexMaxZ == -1) {
-            return null;
-        }
+        final int indexMinZ = getIndex(getCellDepth(), minZ);
+        final int indexMaxZ = getIndex(getCellDepth(), maxZ);
         return new SpatialHashInfo(indexMinX, indexMaxX, indexMinY, indexMaxY, indexMinZ, indexMaxZ);
     }
 
-    private static int getIndex(final int size, final float cellSize, final float index) {
-        final int indexAsInt = (int) (index / cellSize + size / 2);
-        if(indexAsInt >= 0 && indexAsInt < size) {
-            return indexAsInt;
-        }
-        return -1;
+    private static int getIndex(final float cellSize, final float index) {
+        return (int) (index / cellSize);
     }
 
 
@@ -63,17 +50,5 @@ public final class SpatialHashGenerator {
 
     private static float getCellDepth() {
         return CollisionManager.getInstance().getCellDepth();
-    }
-
-    private static int getWidth() {
-        return CollisionManager.getInstance().getWidth();
-    }
-
-    private static int getHeight() {
-        return CollisionManager.getInstance().getHeight();
-    }
-
-    private static int getDepth() {
-        return CollisionManager.getInstance().getDepth();
     }
 }

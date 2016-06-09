@@ -22,6 +22,10 @@ public class VRObservable<T> {
         this.value = value;
     }
 
+    public void dispose() {
+        observers.clear();
+    }
+
     /**
      * Gets whether there is non null value currently set.
      *

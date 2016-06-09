@@ -243,7 +243,7 @@ public class VRComponent extends VRCollider {
     }
 
     /**
-     * Gets the {@link List} of {@link VRComponent Childre}.
+     * Gets the {@link List} of {@link VRComponent Children}.
      *
      * @return the children
      */
@@ -307,9 +307,9 @@ public class VRComponent extends VRCollider {
     }
 
     /**
-     * Animates and transforms this {@link VRComponent} based on the currently top element on the {@link MatrixStack}.
+     * Transforms this {@link VRComponent}.
      */
-    protected void doTransform() {
+    public void doTransform() {
         if(isDirty()) {
             getBoundingBox().setUnmodifiedModelMatrix(getModelMatrix());
             transform(getModelMatrix());

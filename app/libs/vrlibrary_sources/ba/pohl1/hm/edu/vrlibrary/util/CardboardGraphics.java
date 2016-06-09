@@ -5,8 +5,9 @@ import android.os.Vibrator;
 
 import com.google.vrtoolkit.cardboard.CardboardView;
 
+import ba.pohl1.hm.edu.vrlibrary.cardboard.CardboardTrigger;
 import ba.pohl1.hm.edu.vrlibrary.model.VRCamera;
-import ba.pohl1.hm.edu.vrlibrary.ui.hud.VRHud;
+import ba.pohl1.hm.edu.vrlibrary.ui.hud2d.VRHud;
 
 /**
  * This class holds various global attributes that are frequently used.
@@ -28,6 +29,7 @@ public class CardboardGraphics {
     public static Context context;
 
     public static CardboardView cardboardView;
+    public static CardboardTrigger cardboardTrigger;
     public static VRHud hud;
 
     public static long focusTriggerDelay = 1000L; // in ms

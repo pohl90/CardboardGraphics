@@ -20,6 +20,9 @@ import ba.pohl1.hm.edu.vrlibrary.maths.Vector3;
 public class VRBoundingBox {
 
     private Vector3 position = new Vector3();
+    private Vector3 minPosition = new Vector3();
+    private Vector3 maxPosition = new Vector3();
+
     private Vector3 size = new Vector3();
     private Matrix4x4 matrix = new Matrix4x4();
     private Matrix4x4 unmodifiedModelMatrix = new Matrix4x4();
@@ -39,6 +42,14 @@ public class VRBoundingBox {
         size.x = scaling.x;
         size.y = scaling.y;
         size.z = scaling.z;
+
+        minPosition.x = position.x - size.x / 2;
+        minPosition.y = position.y - size.y / 2;
+        minPosition.z = position.z - size.z / 2;
+
+        maxPosition.x = position.x + size.x / 2;
+        maxPosition.y = position.y + size.y / 2;
+        maxPosition.z = position.z + size.z / 2;
     }
 
     public Matrix4x4 getModelMatrix() {
@@ -62,27 +73,27 @@ public class VRBoundingBox {
     }
 
     public float getMinX() {
-        return getCenterX() - 0.5f * getWidth();
+        return minPosition.x;
     }
 
     public float getMinY() {
-        return getCenterY() - 0.5f * getHeight();
+        return minPosition.y;
     }
 
     public float getMinZ() {
-        return getCenterZ() - 0.5f * getDepth();
+        return minPosition.z;
     }
 
     public float getMaxX() {
-        return getCenterX() + 0.5f * getWidth();
+        return maxPosition.x;
     }
 
     public float getMaxY() {
-        return getCenterY() + 0.5f * getHeight();
+        return maxPosition.y;
     }
 
     public float getMaxZ() {
-        return getCenterZ() + 0.5f * getDepth();
+        return maxPosition.z;
     }
 
     public float getWidth() {

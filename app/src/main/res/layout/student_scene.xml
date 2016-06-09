@@ -25,7 +25,7 @@
         android:scaleType="fitXY"
         android:src="@drawable/options_icon"/>
 
-    <ba.pohl1.hm.edu.vrlibrary.ui.hud.VRHud
+    <ba.pohl1.hm.edu.vrlibrary.ui.hud2d.VRHud
         android:id="@+id/hud_overlay"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"

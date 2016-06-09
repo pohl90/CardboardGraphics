@@ -5,8 +5,8 @@ package ba.pohl1.hm.edu.vrlibrary.util;
  */
 public class CGConstants {
 
-    public static final int SPHERE_LONGITUDE = 12; // ||| default = 24
-    public static final int SPHERE_LATITUDE = 7; // --- default = 16
+    public static final int SPHERE_LONGITUDE = 24; // ||| default = 24
+    public static final int SPHERE_LATITUDE = 16; // --- default = 16
     public static final float[] COLOR_RED = new float[]{0.8359375f, 0.17578125f, 0.125f, 1.0f};
     public static final float[] COLOR_GREEN = new float[]{0.17578125f, 0.8359375f, 0.125f, 1.0f};
     public static final float[] COLOR_BLACK = new float[]{0.0f, 0.0f, 0.0f, 1.0f};
@@ -25,4 +25,7 @@ public class CGConstants {
 
     public static final long NAVIGATOR_TOAST_DURATION = 10000L;
     public static final float DEFAULT_FOCUS_DEGREE_LIMIT = 10.0f;
+
+    public static final float VBOX_SPACING = 1.2f;
+    public static final float HBOX_SPACING = 3.5f;
 }

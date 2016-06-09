@@ -113,6 +113,24 @@ public class Matrix4x4 {
         return this;
     }
 
+    public Matrix4x4 setX(final float x) {
+        getFloat16()[12] = x;
+        invalidate();
+        return this;
+    }
+
+    public Matrix4x4 setY(final float y) {
+        getFloat16()[13] = y;
+        invalidate();
+        return this;
+    }
+
+    public Matrix4x4 setZ(final float z) {
+        getFloat16()[14] = z;
+        invalidate();
+        return this;
+    }
+
     /**
      * Translates the matrix and returns this instance.
      *

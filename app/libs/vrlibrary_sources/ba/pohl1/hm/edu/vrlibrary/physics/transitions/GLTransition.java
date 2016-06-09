@@ -9,6 +9,11 @@ public abstract class GLTransition {
 
     public GLTransition(final float steps) {
         this.steps = (int) steps;
+        TransitionManager.getInstance().addTransition(this);
+    }
+
+    public boolean isDone() {
+        return steps <= 0;
     }
 
     /**

@@ -16,6 +16,7 @@ public class CGOptions {
     public static boolean COLLISION_ENABLED = true;
     public static boolean CULLING_ENABLED = true;
     public static boolean FOCUSING_ENABLED = true;
+    public static boolean NORMALS_VISIBLE = true;
     public static int CULLING_MODE = GLES20.GL_BACK;
     public static int FRONT_FACE = GLES20.GL_CCW;
     public static float ANIMATION_SPEED_MODIFIER = 1f;

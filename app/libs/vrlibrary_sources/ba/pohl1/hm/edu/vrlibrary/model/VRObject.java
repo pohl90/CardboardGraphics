@@ -3,6 +3,7 @@ package ba.pohl1.hm.edu.vrlibrary.model;
 import android.opengl.Matrix;
 
 import ba.pohl1.hm.edu.vrlibrary.maths.Matrix4x4;
+import ba.pohl1.hm.edu.vrlibrary.model.observer.VRObservable;
 import ba.pohl1.hm.edu.vrlibrary.physics.animation.AnimationHandler;
 import ba.pohl1.hm.edu.vrlibrary.rendering.RendererManager;
 
@@ -18,7 +19,7 @@ public abstract class VRObject extends Matrix4x4 {
     private AnimationHandler preAnimationHandler;
     private AnimationHandler postAnimationHandler;
 
-    private boolean focused;
+    private VRObservable<Boolean> focusedObservable = new VRObservable<>(false);
     private boolean visible = true;
 
     private String name = "VRObject";
@@ -68,7 +69,7 @@ public abstract class VRObject extends Matrix4x4 {
      * @return {@code true} if the object is focused
      */
     public boolean isFocused() {
-        return focused;
+        return focusedObservable.get();
     }
 
     /**
@@ -77,7 +78,16 @@ public abstract class VRObject extends Matrix4x4 {
      * @param focused {@code true} if the object is focused
      */
     public void setFocused(boolean focused) {
-        this.focused = focused;
+        focusedObservable.set(focused);
+    }
+
+    /**
+     * Gets the {@link VRObservable} for the focus state.
+     *
+     * @return the observable for the focus state
+     */
+    public VRObservable<Boolean> getFocusedObservable() {
+        return focusedObservable;
     }
 
     /**

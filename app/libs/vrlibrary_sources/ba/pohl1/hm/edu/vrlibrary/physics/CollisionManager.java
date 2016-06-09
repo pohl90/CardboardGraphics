@@ -30,9 +30,6 @@ public class CollisionManager {
     private float cellWidth;
     private float cellDepth;
     private float cellHeight;
-    private int width;
-    private int depth;
-    private int height;
 
     private Map<Integer, Map<Integer, Map<Integer, SpatialGridCell>>> spatialHashTable = new HashMap<>();
 
@@ -133,17 +130,11 @@ public class CollisionManager {
      * @param cellWidth  the width of a collision cell
      * @param cellHeight the height of a collision cell
      * @param cellDepth  the depth of a collision cell
-     * @param width      the width of the collision area
-     * @param height     the height of the collision area
-     * @param depth      the depth of the collision area
      */
-    public void init(final float cellWidth, final float cellHeight, final float cellDepth, final int width, final int height, final int depth) {
+    public void init(final float cellWidth, final float cellHeight, final float cellDepth) {
         this.cellWidth = cellWidth;
         this.cellHeight = cellHeight;
         this.cellDepth = cellDepth;
-        this.width = width;
-        this.depth = depth;
-        this.height = height;
     }
 
     /**
@@ -217,33 +208,6 @@ public class CollisionManager {
     }
 
     /**
-     * Gets the width of the collision area.
-     *
-     * @return the width of the collision area
-     */
-    public int getWidth() {
-        return width;
-    }
-
-    /**
-     * Gets the height of the collision area.
-     *
-     * @return the height of the collision area
-     */
-    public int getHeight() {
-        return height;
-    }
-
-    /**
-     * Gets the depth of the collision area.
-     *
-     * @return the depth of the collision area
-     */
-    public int getDepth() {
-        return depth;
-    }
-
-    /**
      * Removes the given {@link VRComponent} from the collision area.
      *
      * @param component the component to remove
@@ -286,9 +250,9 @@ public class CollisionManager {
         final int maxZ = info.getIndexMaxZ();
 
         final List<SpatialGridCell> gridCells = new ArrayList<>();
-        for(int y = minY; y <= maxY; y++) {
-            for(int z = minZ; z <= maxZ; z++) {
-                for(int x = minX; x <= maxX; x++) {
+        for (int y = minY; y <= maxY; y += getCellHeight()) {
+            for (int z = minZ; z <= maxZ; z += getCellDepth()) {
+                for (int x = minX; x <= maxX; x += getCellWidth()) {
                     final SpatialGridCell cell = getCell(x, y, z);
                     cell.addChild(collider);
                     gridCells.add(cell);

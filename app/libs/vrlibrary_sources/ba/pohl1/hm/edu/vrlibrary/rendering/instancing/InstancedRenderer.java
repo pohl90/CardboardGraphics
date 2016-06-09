@@ -49,9 +49,6 @@ public class InstancedRenderer {
 
     public void remove(final InstancedMaterial instanceable) {
         instances.remove(instanceable);
-        int size = countInstances() * INSTANCE_DATA_LENGTH;
-        GLES30.glBindBuffer(GL_ARRAY_BUFFER, modelVBO);
-        GLES30.glBufferData(GL_ARRAY_BUFFER, size * 4, matrixBuffer, GLES30.GL_STREAM_DRAW);
     }
 
     public int countInstances() {
@@ -98,14 +95,14 @@ public class InstancedRenderer {
         }
 
         GLES30.glBindVertexArray(vao);
-        if(matrixBufferDirty) {
+        if (matrixBufferDirty) {
             // Model VBO update
             matrixBuffer.position(0);
             GLES30.glBindBuffer(GL_ARRAY_BUFFER, modelVBO);
             GLES30.glBufferSubData(GL_ARRAY_BUFFER, 0, matrixBuffer.capacity() * 4, matrixBuffer);
             matrixBufferDirty = false;
         }
-        if(colorBufferDirty) {
+        if (colorBufferDirty) {
             // Color VBO update
             colorsBuffer.position(0);
             GLES30.glBindBuffer(GL_ARRAY_BUFFER, colorVBO);

@@ -40,6 +40,14 @@ public class FocusManager {
         return instance;
     }
 
+    public Set<VRComponent> getFocusTargets() {
+        return focusTargets;
+    }
+
+    public VRComponent getMostRecentFocusTarget() {
+        return focusTargets.isEmpty() ? null : focusTargets.iterator().next();
+    }
+
     /**
      * Disposes this {@link FocusManager}.
      */
@@ -80,6 +88,15 @@ public class FocusManager {
             }
         }
         focusTargets = targets;
+    }
+
+    /**
+     * Registers the given {@link VRComponent} with the associate angle limit.
+     *
+     * @param component  the component to register
+     */
+    public void register(final VRComponent component) {
+        focusCandidates.put(component, CGConstants.DEFAULT_FOCUS_DEGREE_LIMIT);
     }
 
     /**
@@ -132,6 +149,7 @@ public class FocusManager {
                     focusTargetTimers.put(component, new Timer().start());
                     break;
                 case LOST:
+                    component.setFocused(false);
                     listener.focusLost(component);
                     if(focusTargetTimers.get(component) != null) {
                         focusTargetTimers.remove(component).stop();

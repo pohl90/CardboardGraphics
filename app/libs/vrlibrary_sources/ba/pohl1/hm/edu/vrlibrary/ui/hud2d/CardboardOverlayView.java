@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ba.pohl1.hm.edu.vrlibrary.ui.hud;
+package ba.pohl1.hm.edu.vrlibrary.ui.hud2d;
 
 import android.content.Context;
 import android.graphics.Color;

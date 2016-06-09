@@ -17,6 +17,7 @@ import com.google.vrtoolkit.cardboard.Viewport;
 import javax.microedition.khronos.egl.EGLConfig;
 
 import ba.pohl1.hm.edu.vrlibrary.R;
+import ba.pohl1.hm.edu.vrlibrary.cardboard.CardboardTrigger;
 import ba.pohl1.hm.edu.vrlibrary.model.VRCamera;
 import ba.pohl1.hm.edu.vrlibrary.model.VRComponent;
 import ba.pohl1.hm.edu.vrlibrary.model.observer.VRObservable;
@@ -26,6 +27,7 @@ import ba.pohl1.hm.edu.vrlibrary.navigation.VRNavigator;
 import ba.pohl1.hm.edu.vrlibrary.navigation.gamecontroller.GameControllerNavigator;
 import ba.pohl1.hm.edu.vrlibrary.physics.CollisionManager;
 import ba.pohl1.hm.edu.vrlibrary.physics.focus.FocusManager;
+import ba.pohl1.hm.edu.vrlibrary.physics.transitions.TransitionManager;
 import ba.pohl1.hm.edu.vrlibrary.rendering.RendererManager;
 import ba.pohl1.hm.edu.vrlibrary.rendering.TransformationManager;
 import ba.pohl1.hm.edu.vrlibrary.rendering.instancing.InstancedRendererManager;
@@ -75,9 +77,10 @@ public abstract class AbstractCardboardActivity extends CardboardActivity implem
         CardboardGraphics.cardboardView = (CardboardView) findViewById(getCardboardViewId());
         CardboardGraphics.cardboardView.setRenderer(this);
         CardboardGraphics.cardboardView.setSettingsButtonEnabled(false);
+        CardboardGraphics.cardboardTrigger = new CardboardTrigger();
         setCardboardView(CardboardGraphics.cardboardView);
 
-        CollisionManager.getInstance().init(.5f, 1f, .5f, 400, 100, 400);
+        CollisionManager.getInstance().init(1f, 1f, 1f);
         timer.addFPSChangedListener(this);
         CardboardGraphics.vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         initListeners();
@@ -89,6 +92,7 @@ public abstract class AbstractCardboardActivity extends CardboardActivity implem
     protected void onDestroy() {
         scene.dispose();
         removeListeners();
+        CardboardGraphics.cardboardTrigger.dispose();
         FocusManager.getInstance().dispose();
         CollisionManager.getInstance().dispose();
         RendererManager.getInstance().dispose();
@@ -100,6 +104,8 @@ public abstract class AbstractCardboardActivity extends CardboardActivity implem
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
+        System.out.println("ACTION " + event.toString());
+
         if(getNavigator() instanceof GameControllerNavigator) {
             ((GameControllerNavigator) getNavigator()).controllerEvent(event);
         }
@@ -148,6 +154,7 @@ public abstract class AbstractCardboardActivity extends CardboardActivity implem
         if(navigatorProperty.isPresent()) {
             getNavigator().navigate(CardboardGraphics.camera, getMoveModifier() * timer.getDelta());
         }
+        TransitionManager.getInstance().executeTransitions();
         TransformationManager.getInstance().applyTransformations(timer.getDelta());
         InstancedRendererManager.getInstance().updateInstancedModels();
         CGUtils.checkGLError(TAG, "onNewFrame");
@@ -197,7 +204,11 @@ public abstract class AbstractCardboardActivity extends CardboardActivity implem
      */
     @Override
     public void onCardboardTrigger() {
-        if(navigatorProperty.isPresent()) {
+        if (!CardboardGraphics.cardboardTrigger.onCardboardTrigger()) {
+            // Cardboard trigger event is consumed, return here
+            return;
+        }
+        if (navigatorProperty.isPresent()) {
             getNavigator().onCardboardTrigger();
         }
     }

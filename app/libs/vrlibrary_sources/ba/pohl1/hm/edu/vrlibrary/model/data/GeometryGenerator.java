@@ -10,6 +10,10 @@ import ba.pohl1.hm.edu.vrlibrary.util.CGUtils;
  */
 public final class GeometryGenerator {
 
+    private static float[] planeVertices;
+    private static float[] planeNormals;
+    private static float[] planeTextures;
+
     private static float[] cubeVertices;
     private static float[] cubeNormals;
     private static float[] cubeTextures;
@@ -21,6 +25,46 @@ public final class GeometryGenerator {
 
     private GeometryGenerator() {
         // Prevents instantiation
+    }
+
+    public static GeometryData createPlane() {
+        planeVertices = new float[]{
+                -0.5f, 0f, -0.5f,
+                0.5f, 0f, -0.5f,
+                -0.5f, 0f, 0.5f,
+                0.5f, 0f, -0.5f,
+                0.5f, 0f, 0.5f,
+                -0.5f, 0f, 0.5f,
+        };
+        planeNormals = new float[]{
+                0f, 1f, 0f,
+                0f, 1f, 0f,
+                0f, 1f, 0f,
+                0f, 1f, 0f,
+                0f, 1f, 0f,
+                0f, 1f, 0f,
+        };
+        planeTextures = new float[]{
+                // Front
+                0.f, 1.f,
+                1.f, 1.f,
+                0.f, 0.f,
+                1.f, 1.f,
+                1.f, 0.f,
+                0.f, 0.f,
+        };
+        final float[] planeColors = new float[]{
+                -0.5f, 0f, -0.5f, 1.0f,
+                -0.5f, 0f, -0.5f, 1.0f,
+                0.5f, 0f, -0.5f, 1.0f,
+                0.5f, 0f, -0.5f, 1.0f,
+                -0.5f, 0f, -0.5f, 1.0f,
+                0.5f, 0f, -0.5f, 1.0f,
+        };
+        final GeometryData data = new GeometryData(planeVertices, planeNormals);
+        data.setTexArray(planeTextures);
+        data.setColorsArray(planeColors);
+        return data;
     }
 
     public static GeometryData createCube(final boolean instanced) {

@@ -49,6 +49,10 @@ public class VRRoom extends VRComponent {
         add(floor, wallNorth, wallSouth, wallWest, wallEast);
     }
 
+    public Cube getFloor() {
+        return floor;
+    }
+
     public Cube getWallEast() {
         return wallEast;
     }
